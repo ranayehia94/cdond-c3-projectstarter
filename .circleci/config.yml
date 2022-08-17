@@ -85,7 +85,7 @@ jobs:
                 
   test-backend:
     docker:
-      # Docker image here
+      circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
