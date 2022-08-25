@@ -210,7 +210,7 @@ jobs:
           name: Configure server
           command: |
             # Your code here
-            cat ~/cdond-c3-projectstarter/.circleci/ansible/inventory.txt
+            cat .circleci/ansible/inventory.txt
             export ANSIBLE_HOST_KEY_CHECKING=False
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
