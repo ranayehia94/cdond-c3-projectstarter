@@ -57,6 +57,7 @@ commands:
       - run:
           name: install node
           command: | 
+            apk add --upgrade bash
             curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
             sudo apt install -y nodejs
             
@@ -66,6 +67,7 @@ commands:
       - run:
           name:
           command: | 
+            apk add --upgrade bash
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install 
@@ -301,44 +303,23 @@ jobs:
     docker:
       # Docker image here that supports AWS CLI
       - image: amazon/aws-cli
-      #- image: cimg/base:stable 
     steps:
       # Checkout code from git
       - checkout
-      #- install_ansible
       - install_nodejs
       - install_awscli
-      # - restore_cache:
-      #     keys: [scan-frontend]
-      # - add_ssh_keys:
-      #     fingerprints: [ "c4:b4:b3:8e:b2:49:8d:15:dc:77:1a:db:63:54:f6:59" ] 
-      # - attach_workspace:
-      #     at: ~/ 
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # your code here
-      #       # cd frontend
-      #       # npm install
-      #       # apk add --update curl npm zip
-
-
       - run:
           name: Get backend url
           command: |
             # your code here
-            #export BACKEND_IP=$(aws ec2 describe-instances...............)
             export BACKEND_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
-              
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
-            # export API_URL="http://${BACKEND_IP}:3030"
-            # echo "${API_URL}"
       - run:
           name: Deploy frontend objects
           command: |
@@ -346,7 +327,6 @@ jobs:
             cd frontend
             npm install
             npm run build
-            # tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       # Here's where you will add some code to rollback on failure      
       - destroy_environment:
@@ -364,7 +344,6 @@ jobs:
       # Add ssh keys with fingerprint
       # attach workspace
       - checkout
-      
       - install_ansible
       - install_awscli
       - install_nodejs
@@ -378,11 +357,7 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
-            apk add --update curl  
-            
-
-
-          
+            apk add --update curl 
       - run:
           name: Deploy backend
           command: |
@@ -400,9 +375,9 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure 
-      - run:
-          name: Deploy backend
-          command: |
+      # - run:
+      #     name: Deploy backend
+      #     command: |
           
       - destroy_environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
