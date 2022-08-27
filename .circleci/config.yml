@@ -305,18 +305,22 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - install_ansible
+      #- install_ansible
       - install_nodejs
       - install_awscli
+      # - restore_cache:
+      #     keys: [scan-frontend]
       # - add_ssh_keys:
       #     fingerprints: [ "c4:b4:b3:8e:b2:49:8d:15:dc:77:1a:db:63:54:f6:59" ] 
       # - attach_workspace:
       #     at: ~/ 
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-            apk add --update curl npm zip
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       # your code here
+      #       # cd frontend
+      #       # npm install
+      #       # apk add --update curl npm zip
 
 
       - run:
@@ -328,6 +332,7 @@ jobs:
               --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
+              
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -341,7 +346,7 @@ jobs:
             cd frontend
             npm install
             npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            # tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       # Here's where you will add some code to rollback on failure      
       - destroy_environment:
@@ -359,37 +364,46 @@ jobs:
       # Add ssh keys with fingerprint
       # attach workspace
       - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-            apk curl      
+      
       - install_ansible
       - install_awscli
+      - install_nodejs
       - add_ssh_keys:
           fingerprints: [ "c4:b4:b3:8e:b2:49:8d:15:dc:77:1a:db:63:54:f6:59" ] 
       - attach_workspace:
-          at: ~/ 
+          at: ~/
+        # - restore_cache:
+      #     keys: [scan-frontend]
       - run:
           name: Install dependencies
           command: |
             # your code here
-            apk curl
+            apk add --update curl  
+            
+
+
+          
       - run:
           name: Deploy backend
           command: |
             # your code here
             cd backend
+            npm install
             npm i
             npm run build
             cd ..
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
+            
             cd .circleci/ansible
-            echo "Contents  of the inventory.txt file is -------"
+            # echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure 
+      - run:
+          name: Deploy backend
+          command: |
+          
       - destroy_environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
           
