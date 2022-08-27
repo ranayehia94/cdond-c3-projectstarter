@@ -234,6 +234,7 @@ jobs:
       #- image: sleavely/node-awscli
     steps:
       #- checkout # Checkout code from git
+      - checkout
       # - install_awscli
       - run:
           name: Run migrations
