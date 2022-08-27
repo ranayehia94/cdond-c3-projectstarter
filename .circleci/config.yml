@@ -230,11 +230,11 @@ jobs:
           
   run-migrations:
     docker:
-      # - image: circleci/node:13.8.0
-      - image: sleavely/node-awscli
+       - image: circleci/node:13.8.0
+      #- image: sleavely/node-awscli
     steps:
-      - checkout # Checkout code from git
-      #- install_awscli
+      #- checkout # Checkout code from git
+      - install_awscli
       - run:
           name: Run migrations
           command: |
