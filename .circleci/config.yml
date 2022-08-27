@@ -61,6 +61,17 @@ commands:
             curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
             sudo apt install -y nodejs
             
+  install_awscli:
+    description: install awscli
+    steps:
+      - run:
+          name:
+          command: | 
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install 
+          
+            
        
 jobs:
   build-frontend:
@@ -295,6 +306,9 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - install_ansible
+      - install_nodejs
+      - install_awscli
       # - add_ssh_keys:
       #     fingerprints: [ "c4:b4:b3:8e:b2:49:8d:15:dc:77:1a:db:63:54:f6:59" ] 
       # - attach_workspace:
@@ -303,8 +317,8 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
-            install_ansible
-            install_nodejs
+            apk add --update curl npm zip
+
 
       - run:
           name: Get backend url
@@ -346,6 +360,7 @@ jobs:
       # Add ssh keys with fingerprint
       # attach workspace
       - checkout
+      - install_ansible
       - add_ssh_keys:
           fingerprints: [ "c4:b4:b3:8e:b2:49:8d:15:dc:77:1a:db:63:54:f6:59" ] 
       - attach_workspace:
@@ -354,7 +369,6 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
-            install_ansible
             apk curl
       - run:
           name: Deploy backend
