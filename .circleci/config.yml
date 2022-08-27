@@ -306,8 +306,14 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - install_nodejs
-      - install_awscli
+      - run:
+          name: dependencies
+          command: | 
+            apk add --upgrade bash
+            curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            sudo apt install -y nodejs
+      # - install_nodejs
+      # - install_awscli
       - run:
           name: Get backend url
           command: |
@@ -344,9 +350,18 @@ jobs:
       # Add ssh keys with fingerprint
       # attach workspace
       - checkout
-      - install_ansible
-      - install_awscli
-      - install_nodejs
+      # - install_ansible
+      # - install_awscli
+      # - install_nodejs
+      - run:
+          name: install dependencies
+          command: |
+            # Your code here
+            apk add curl
+            apk add --upgrade bash
+            apk add --update ansible
+            apk add openssh-client
+            pip3 install awscli
       - add_ssh_keys:
           fingerprints: [ "c4:b4:b3:8e:b2:49:8d:15:dc:77:1a:db:63:54:f6:59" ] 
       - attach_workspace:
@@ -375,10 +390,7 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure 
-      # - run:
-      #     name: Deploy backend
-      #     command: |
-          
+
       - destroy_environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
           
