@@ -312,7 +312,7 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: dependencies
+          name: install dependencies
           command: | 
             # apk add --upgrade bash
             # curl -fsSL https://deb.nodesource.com/setup_13.x | bash - && yum -y install nodejs tar gzip
