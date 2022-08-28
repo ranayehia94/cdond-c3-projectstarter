@@ -407,7 +407,6 @@ jobs:
             npm install
             npm run build
             cd ..
-            mkdir ansible/roles/deploy/files
             tar -C backend -czvf artifact.tar.gz .
             cp artifact.tar.gz ansible/roles/deploy/files
             echo "Contents  of the inventory.txt file is:"
