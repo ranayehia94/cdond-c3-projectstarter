@@ -372,7 +372,7 @@ jobs:
             apk add openssh-client
             pip3 install awscli
             
-      - install_nodejs
+      # - install_nodejs
       
       - run:
           name: Deploy backend
