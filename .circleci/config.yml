@@ -46,7 +46,7 @@ commands:
       - run:
           name: Install Ansible
           command: | 
-            apk add --upgrade bash
+            # apk add --upgrade bash
             sudo apt update
             sudo apt install software-properties-common -y
             sudo add-apt-repository --yes --update ppa:ansible/ansible
@@ -357,15 +357,15 @@ jobs:
       - install_ansible
       - install_awscli
       - install_nodejs
-      - run:
-          name: install dependencies
-          command: |
-            # Your code here
-            apk add curl
-            # apk add --upgrade bash npm
-            # apk add --update ansible
-            apk add openssh-client
-            # pip3 install awscli
+      # - run:
+      #     name: install dependencies
+      #     command: |
+      #       # Your code here
+      #       apk add curl
+      #       # apk add --upgrade bash npm
+      #       # apk add --update ansible
+      #       apk add openssh-client
+      #       # pip3 install awscli
       - add_ssh_keys:
           fingerprints: [ "c4:b4:b3:8e:b2:49:8d:15:dc:77:1a:db:63:54:f6:59" ] 
       - attach_workspace:
