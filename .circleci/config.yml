@@ -347,36 +347,32 @@ jobs:
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      # - image: python:3.8-alpine
-      - image: cimg/base:stable
+       - image: python:3.8-alpine
+      # - image: cimg/base:stable
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
       # attach workspace
       - checkout
-      - install_ansible
-      - install_awscli
-      - install_nodejs
-      # - run:
-      #     name: install dependencies
-      #     command: |
-      #       # Your code here
-      #       apk add curl
-      #       # apk add --upgrade bash npm
-      #       # apk add --update ansible
-      #       apk add openssh-client
-      #       # pip3 install awscli
+      # - install_ansible
+      # - install_awscli
+      #- install_nodejs
       - add_ssh_keys:
           fingerprints: [ "c4:b4:b3:8e:b2:49:8d:15:dc:77:1a:db:63:54:f6:59" ] 
       - attach_workspace:
           at: ~/
-        # - restore_cache:
-      #     keys: [scan-frontend]
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # your code here
-      #       apk add --update curl 
+      - run:
+          name: Install dependencies
+          command: |
+            # Your code here
+            apk add curl
+            apk add --upgrade bash
+            apk add --update ansible
+            apk add openssh-client
+            pip3 install awscli
+            
+      - install_nodejs
+      
       - run:
           name: Deploy backend
           command: |
