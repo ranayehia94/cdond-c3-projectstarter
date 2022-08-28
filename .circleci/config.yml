@@ -372,11 +372,11 @@ jobs:
           at: ~/
         # - restore_cache:
       #     keys: [scan-frontend]
-      - run:
-          name: Install dependencies
-          command: |
-            # your code here
-            apk add --update curl 
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       # your code here
+      #       apk add --update curl 
       - run:
           name: Deploy backend
           command: |
