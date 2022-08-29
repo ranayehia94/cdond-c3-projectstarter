@@ -503,6 +503,7 @@ jobs:
             --query "Exports[?Name==\`WorkflowID\`].Value" \
             --no-paginate --output text)
             echo $OldWorkflowID > ~/OldWorkflowID.txt
+            echo ${CIRCLE_WORKFLOW_ID:0:7} > ~/Old_circle_WorkflowID.txt
             
             aws cloudformation deploy \
             --template-file .circleci/files/cloudfront.yml \
@@ -519,6 +520,8 @@ jobs:
           root: ~/
           paths:
             - OldWorkflowID.txt
+            - Old_circle_WorkflowID.txt
+            
             
       - destroy_environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
@@ -550,7 +553,10 @@ jobs:
             # your code here
             cat ~/OldWorkflowID.txt
             export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
+            export Old_circle_WorkflowID=$(cat ~/Old_circle_WorkflowID.txt)
+            
             echo OldWorkflowID: "${OldWorkflowID}"
+            echo Old_circle_WorkflowID: "${Old_circle_WorkflowID}"
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
             
             # export OldWorkflowID="the id here"
@@ -563,13 +569,23 @@ jobs:
             #   # your code here
             # fi
             export OldWorkflowID=$(cat ~/OldWorkflowID.txt)
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
+            export Old_circle_WorkflowID=$(cat ~/Old_circle_WorkflowID.txt)
+            
+            # if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
+            # then
+            #   echo Deleting Old Stacks: workflow number "${OldWorkflowID}"
+            #   aws s3 rm s3://udapeople-${OldWorkflowID} --recursive
+            #   aws cloudformation delete-stack --stack-name udapeople-backend-${OldWorkflowID}
+            #   aws cloudformation delete-stack --stack-name udapeople-frontend-${OldWorkflowID}
+            # fi
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${Old_circle_WorkflowID}" ]]
             then
-              echo Deleting Old Stacks: workflow number "${OldWorkflowID}"
-              aws s3 rm s3://udapeople-${OldWorkflowID} --recursive
-              aws cloudformation delete-stack --stack-name udapeople-backend-${OldWorkflowID}
-              aws cloudformation delete-stack --stack-name udapeople-frontend-${OldWorkflowID}
+              echo Deleting Old Stacks: workflow number "${Old_circle_WorkflowID}"
+              aws s3 rm s3://udapeople-${Old_circle_WorkflowID} --recursive
+              aws cloudformation delete-stack --stack-name udapeople-backend-${Old_circle_WorkflowID}
+              aws cloudformation delete-stack --stack-name udapeople-frontend-${Old_circle_WorkflowID}
             fi
+
 
 workflows:
   default:
