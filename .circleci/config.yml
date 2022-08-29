@@ -492,6 +492,8 @@ jobs:
           name: Install dependencies
           command: |
             # your code here
+            # sudo apt-get update -y
+            yum -y install tar gzip
             
       - run:
           name: Update cloudfront distribution
