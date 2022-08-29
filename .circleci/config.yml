@@ -514,13 +514,13 @@ jobs:
             echo Current Workflow ID: "${CIRCLE_WORKFLOW_ID:0:7}"
 #       # Here's where you will add some code to rollback on failure  
 
-cleanup:
+  cleanup:
     docker:
       # Docker image here
       - image: amazon/aws-cli
     steps:
       # Checkout code from git
-      -checkout
+      - checkout
       - run:
           name: Get old stack workflow id
           command: |
